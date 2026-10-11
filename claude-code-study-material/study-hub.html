@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Claude Code Full Course — Study Hub</title>
+<style>
+  :root{
+    --bg:#0b1020; --bg2:#121a33; --card:#161f3d; --card2:#1d2750;
+    --ink:#e8ecf8; --muted:#9aa7c7; --line:#26315c;
+    --accent:#ff9d57; --accent2:#6ea8fe; --good:#4ade80; --bad:#f87171; --warn:#fbbf24;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);
+    font:16px/1.65 system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
+  a{color:var(--accent2)}
+  header{padding:28px 22px 18px;background:linear-gradient(160deg,#111a36,#0b1020 70%);border-bottom:1px solid var(--line)}
+  header h1{margin:0 0 6px;font-size:clamp(20px,3vw,30px);letter-spacing:-.02em}
+  header p{margin:0;color:var(--muted);font-size:14.5px;max-width:900px}
+  .pill{display:inline-block;background:#20294e;border:1px solid var(--line);color:var(--muted);
+    border-radius:999px;padding:2px 10px;font-size:12.5px;margin:6px 6px 0 0}
+  nav{display:flex;gap:6px;flex-wrap:wrap;padding:12px 22px;background:var(--bg2);
+    border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20}
+  nav button{background:transparent;border:1px solid transparent;color:var(--muted);
+    padding:8px 13px;border-radius:10px;cursor:pointer;font-size:14.5px}
+  nav button:hover{color:var(--ink);background:#1a2347}
+  nav button.on{background:#243063;color:#fff;border-color:#38508f}
+  main{max-width:1080px;margin:0 auto;padding:26px 22px 90px}
+  section{display:none;animation:fade .18s ease}
+  section.on{display:block}
+  @keyframes fade{from{opacity:0}to{opacity:1}}
+  h2{font-size:22px;margin:6px 0 4px;letter-spacing:-.01em}
+  h3{font-size:17px;margin:26px 0 8px;color:#fff}
+  h4{font-size:15px;margin:18px 0 6px;color:var(--accent)}
+  .lead{color:var(--muted);margin:0 0 18px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin:14px 0}
+  .card.tight{padding:12px 14px}
+  .grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+  table{width:100%;border-collapse:collapse;margin:10px 0;font-size:14.5px;display:block;overflow-x:auto}
+  th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+  th{background:#1b2549;color:#fff;font-weight:600}
+  code{font-family:var(--mono);background:#0e1530;border:1px solid var(--line);
+    border-radius:6px;padding:1px 5px;font-size:13.5px}
+  pre{background:#0d1330;border:1px solid var(--line);border-radius:12px;padding:13px 15px;
+    overflow-x:auto;font-family:var(--mono);font-size:13px;line-height:1.55}
+  pre code{background:none;border:0;padding:0}
+  ul.tight{margin:6px 0 6px 4px;padding-left:20px}
+  ul.tight li{margin:5px 0}
+  .tag{font-size:12px;padding:2px 8px;border-radius:999px;border:1px solid var(--line);color:var(--muted);background:#1a2347}
+  .note{border-left:3px solid var(--accent);padding:8px 12px;background:#1c2138;border-radius:0 10px 10px 0;margin:12px 0;font-size:14.5px}
+  .warn{border-left-color:var(--warn)}
+  button.btn{background:#26326b;color:#fff;border:1px solid #38508f;padding:9px 15px;border-radius:10px;cursor:pointer;font-size:14.5px}
+  button.btn:hover{background:#2f3d80}
+  button.ghost{background:transparent;color:var(--muted);border:1px solid var(--line)}
+  /* flashcards */
+  .fc{background:linear-gradient(160deg,var(--card2),var(--card));border:1px solid var(--line);
+      border-radius:16px;padding:26px 22px;min-height:230px;display:flex;flex-direction:column;justify-content:center;
+      cursor:pointer;transition:transform .12s ease}
+  .fc:hover{transform:translateY(-2px)}
+  .fc .q{font-size:18px;font-weight:600}
+  .fc .a{margin-top:14px;color:#c9d6ff;font-size:16px;display:none;border-top:1px dashed var(--line);padding-top:12px}
+  .fc.flip .a{display:block}
+  .fc .hint{color:var(--muted);font-size:13px;margin-top:12px}
+  .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:14px 0}
+  .count{color:var(--muted);font-size:14px}
+  /* quiz */
+  .qbox{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:15px 17px;margin:14px 0}
+  .qtext{font-weight:600;margin-bottom:9px}
+  .opt{display:block;width:100%;text-align:left;background:#141c3a;border:1px solid var(--line);
+    color:var(--ink);padding:9px 12px;border-radius:10px;margin:6px 0;cursor:pointer;font-size:14.5px}
+  .opt:hover{background:#1b2450}
+  .opt.right{border-color:var(--good);background:#12301f}
+  .opt.wrong{border-color:var(--bad);background:#33141a}
+  .expl{display:none;color:#c9d6ff;font-size:14.5px;margin-top:8px;border-top:1px dashed var(--line);padding-top:8px}
+  .qbox.done .expl{display:block}
+  .score{font-size:18px;font-weight:600}
+  /* labs */
+  .lab{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin:12px 0}
+  .lab h4{margin-top:0}
+  .lab label{display:flex;gap:10px;align-items:flex-start;margin:7px 0;font-size:14.5px;cursor:pointer}
+  .lab input{margin-top:5px;accent-color:var(--accent2)}
+  .lab input:checked + span{color:var(--muted);text-decoration:line-through}
+  footer{border-top:1px solid var(--line);padding:18px 22px;color:var(--muted);font-size:13.5px;text-align:center}
+  .kbd{font-family:var(--mono);font-size:12.5px;background:#0e1530;border:1px solid var(--line);border-bottom-width:2px;border-radius:6px;padding:1px 6px}
+</style>
+</head>
+<body>
+<header>
+  <h1>Claude Code Full Course — Study Hub</h1>
+  <p>Interactive companion for <strong>“CLAUDE CODE FULL COURSE 12 HOURS: Build Real AI Projects (2026)”</strong>
+     by Mayank Aggarwal. 13 modules, 14 hours — condensed into what you must remember, plus flashcards, a quiz and a lab tracker.</p>
+  <div>
+    <span class="pill">13 modules + capstone</span>
+    <span class="pill">Brain × hands</span>
+    <span class="pill">Context = cost</span>
+    <span class="pill">Hooks = zero tokens</span>
+    <span class="pill">⚠️ version-specific facts flagged</span>
+  </div>
+</header>
+
+<nav>
+  <button class="on" data-t="overview">Overview</button>
+  <button data-t="modules">13 Modules</button>
+  <button data-t="cheat">Cheat Sheet</button>
+  <button data-t="cards">Flashcards</button>
+  <button data-t="quiz">Quiz</button>
+  <button data-t="labs">Lab Tracker</button>
+</nav>
+
+<main>
+
+<!-- ================= OVERVIEW ================= -->
+<section id="overview" class="on">
+  <h2>The one model everything hangs on</h2>
+  <p class="lead">If you can explain these four ideas, you understand the course. Modules 3–12 are levers on them; module 13 pulls every lever.</p>
+  <div class="grid">
+    <div class="card"><h4>1 · Brain vs brain with hands</h4>
+      <p>Claude chat = a brain that advises. <strong>Claude Code = the same brain with hands</strong> — the hands are your terminal, which can create, edit, delete and execute.</p></div>
+    <div class="card"><h4>2 · The agentic loop</h4>
+      <p>Ask → plan → act → observe → check → retry or answer. Not magic — iteration at very high speed.</p></div>
+    <div class="card"><h4>3 · Context is the scarce resource</h4>
+      <p>LLMs are stateless: <em>every</em> message re-sends the whole history plus system prompt, tools, MCP, skills and CLAUDE.md. That drives cost, limits and “context rot”.</p></div>
+    <div class="card"><h4>4 · Levers on that model</h4>
+      <p>CLAUDE.md (memory) · skills (procedures) · hooks (zero-token automation) · MCP (connections) · subagents &amp; teams (workers) · plugins (bundles) · scheduling (work without you).</p></div>
+  </div>
+
+  <h3>Watch order with a purpose</h3>
+  <table>
+    <tr><th>Pass</th><th>What to do</th></tr>
+    <tr><td>Before</td><td>Skim the module summary here so you know what to look for.</td></tr>
+    <tr><td>During</td><td>Watch at 1.25–1.5×. Stop at every demo and do it yourself.</td></tr>
+    <tr><td>After</td><td>Do the matching lab. Then flashcards the next day, quiz after a week.</td></tr>
+  </table>
+
+  <h3>The 10 rules to keep on your desk</h3>
+  <div class="card"><ol>
+    <li>CLAUDE.md before code.</li>
+    <li>One task, one session — <code>/clear</code> freely.</li>
+    <li><code>/compact</code> with explicit instructions when you must continue.</li>
+    <li>Delegate bulk reading to subagents.</li>
+    <li>Hooks for anything that must happen every time.</li>
+    <li>Match the model to the job: plan strong, build balanced, maintain cheap.</li>
+    <li>Only connect the MCP servers you actually use.</li>
+    <li>Read any plugin or hook before installing — it runs with your permissions.</li>
+    <li>Start automations read-only; gate the irreversible; log everything.</li>
+    <li>Verify with commands, not vibes — put those commands in CLAUDE.md.</li>
+  </ol></div>
+  <div class="note warn"><strong>Version drift:</strong> model names, prices, limits and some command names are from the recording (2026). Re-check the official docs before relying on a specific number or flag.</div>
+</section>
+
+<!-- ================= MODULES ================= -->
+<section id="modules">
+  <h2>The 13 modules</h2>
+  <p class="lead">Condensed revision notes. Full detail lives in <code>01-study-guide.md</code>.</p>
+
+  <div class="card"><h3>1 · Foundations <span class="tag">0:00</span></h3>
+    <ul class="tight">
+      <li><strong>Anthropic builds Claude; OpenAI builds ChatGPT.</strong> Same category, different company — Anthropic positions as safety-first.</li>
+      <li><strong>Tiers:</strong> <em>Haiku</em> (fast/cheap), <em>Sonnet</em> (balanced), <em>Opus</em> (most capable). Pick by job, not by ego: Opus to plan, Sonnet to build, Haiku to maintain.</li>
+      <li><strong>Web/desktop Claude</strong> can advise and read screenshots but cannot touch your files. <strong>Claude Code</strong> installs on your machine and acts through the <strong>terminal</strong>.</li>
+      <li><strong>Agentic loop:</strong> plan → act → observe → check → retry/answer.</li>
+    </ul></div>
+
+  <div class="card"><h3>2 · Install &amp; auth <span class="tag">0:33</span></h3>
+    <ul class="tight">
+      <li>Native terminal install is the default path; macOS/Linux one-liner, Windows PowerShell <em>or</em> CMD — match your shell (Windows Terminal recommended).</li>
+      <li>Also available inside Claude Desktop (paid plan) and IDEs like VS Code.</li>
+      <li><strong>“Trust this workspace”</strong> is the real security boundary: read, write and execute in that folder.</li>
+      <li><strong>Subscription</strong> (Pro/Max, plan limits) vs <strong>API key</strong> (pay per token, required for programmatic/headless).</li>
+      <li>Sessions live under <code>~/.claude/</code> on disk — that’s how resume/rewind work.</li>
+    </ul></div>
+
+  <div class="card"><h3>3 · Commands, modes, <code>.claude</code> <span class="tag">1:22</span></h3>
+    <ul class="tight">
+      <li>Core commands: <code>/model</code> <code>/effort</code> <code>/cost</code> <code>/context</code> <code>/compact</code> <code>/clear</code> <code>/rewind</code> <code>/branch</code> <code>/resume</code> <code>/agents</code> <code>/mcp</code> <code>/plugins</code> <code>/loop</code> <code>/init</code>.</li>
+      <li>Switching models mid-session re-reads the full history — don’t thrash.</li>
+      <li>Permission modes: default (ask) → accept-edits → plan (read-only) → auto → don’t-ask → bypass (isolated only). <span class="kbd">Shift+Tab</span> cycles.</li>
+      <li><code>.claude/</code> is hidden (<code>ls -la</code>): CLAUDE.md, settings.json, rules/, skills/, agents/, commands/, hooks/, MCP config. Project scope vs <code>~/.claude</code> user scope.</li>
+    </ul></div>
+
+  <div class="card"><h3>4 · CLAUDE.md <span class="tag">2:58</span></h3>
+    <ul class="tight">
+      <li>The project’s permanent brain: stack, commands, conventions, guardrails, verification.</li>
+      <li>Priority, weakest → strongest: <strong>enterprise → user → project → <code>CLAUDE.local.md</code></strong>. Closest to the project wins; Claude walks up the directory tree loading files as it goes.</li>
+      <li>Belongs: overview, essential commands, standards, structure, testing, hard rules, verification. <strong>Doesn’t:</strong> full API docs, drift-prone snippets, task-specific notes, secrets.</li>
+      <li>Bootstrap with <code>/init</code>; keep it small with imports (<code>@docs/…</code>).</li>
+    </ul></div>
+
+  <div class="card"><h3>5 · Context management <span class="tag">3:43</span></h3>
+    <ul class="tight">
+      <li>Every turn sends system prompt + tools + MCP + skills + CLAUDE.md + full history + auto-compact buffer.</li>
+      <li><strong>Context rot:</strong> attention favours the start and end of a long context → ignored instructions, repeated work, new mistakes. It’s a management problem, not a model problem.</li>
+      <li>Tools: <code>/context</code> to inspect, <code>/compact</code> <em>with instructions</em> to continue, <code>/clear</code> for a fresh start, status file + new session for handover.</li>
+      <li>Cost model: history is re-billed every call — course example: ~200K context × 5 messages ≈ $3 ⚠️.</li>
+    </ul></div>
+
+  <div class="card"><h3>6 · Skills <span class="tag">4:31</span></h3>
+    <ul class="tight">
+      <li>Reusable playbooks: <code>SKILL.md</code> (name, description, trigger) + optional scripts/references/assets.</li>
+      <li><strong>Progressive disclosure:</strong> only name + description sit in context until invoked — cheap at rest.</li>
+      <li><code>description</code> drives auto-invocation; put deterministic steps in scripts; pin <code>requirements.txt</code>.</li>
+      <li>Locations: <code>.claude/skills/</code> (project), <code>~/.claude/skills/</code> (personal), plugins. Build them fast with a skill-creator.</li>
+    </ul></div>
+
+  <div class="card"><h3>7 · Hooks <span class="tag">5:40</span></h3>
+    <ul class="tight">
+      <li>Scripts fired by lifecycle events — <strong>outside the model, zero tokens, deterministic</strong>.</li>
+      <li>Events: SessionStart · UserPromptSubmit · PreToolUse · PostToolUse · Notification · subagent/task events · Stop · SessionEnd · pre-compact.</li>
+      <li>Contract: JSON on stdin; <strong>exit 0 = allow, exit 2 = block</strong> (stderr goes to Claude as the reason). Advanced: JSON <code>permissionDecision</code>.</li>
+      <li>Classics: notification, security guard on Bash, auto-format after Write/Edit, session logging.</li>
+      <li>Let Claude write your first hook (avoids settings clobbering), then test hooks by hand.</li>
+    </ul></div>
+
+  <div class="card"><h3>8 · MCP <span class="tag">6:49</span></h3>
+    <ul class="tight">
+      <li>Open standard for AI ↔ external tools/data. The toolbox you don’t have to build or maintain.</li>
+      <li>Connectors are ready-made; MCP is the extensible protocol. <strong>Local</strong> (stdio, your RAM) vs <strong>hosted</strong> (HTTP + API key).</li>
+      <li>Config in <code>.mcp.json</code>; secrets via <code>${ENV_VAR}</code>; scopes: project (committed) / user / local (private).</li>
+      <li>Every server’s tool list costs context → enable only what you need. <code>/mcp</code> to inspect.</li>
+      <li>Build your own: expose functions with name + description + JSON-schema params. The description is the prompt for tool choice.</li>
+    </ul></div>
+
+  <div class="card"><h3>9 · Subagents <span class="tag">8:20</span></h3>
+    <ul class="tight">
+      <li>Isolated workers with their own context, prompt, tools and (optionally) cheaper model — only a summary returns.</li>
+      <li>Why: context hygiene, cost, focus, parallelism, safety via restricted tools.</li>
+      <li>Defined in <code>.claude/agents/*.md</code> / <code>~/.claude/agents/</code>; invoke by natural language, <code>@name</code>, or <code>/agents</code>.</li>
+      <li>Rule of thumb: if it reads a lot to produce a little, make it a subagent.</li>
+    </ul></div>
+
+  <div class="card"><h3>10 · Agent teams <span class="tag">9:51</span></h3>
+    <ul class="tight">
+      <li>Team lead + teammates in separate sessions, messaging each other — not just reporting to a parent.</li>
+      <li>Isolation via <strong>git worktrees</strong> (own branch/checkout); lead merges. <span class="kbd">Shift+Down</span> switches views.</li>
+      <li>Experimental flag: <code>CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1</code> ⚠️. High token burn; supervise and review merges.</li>
+    </ul></div>
+
+  <div class="card"><h3>11 · Plugins &amp; marketplace <span class="tag">10:35</span></h3>
+    <ul class="tight">
+      <li>Versioned bundles: agents + skills + commands + hooks + MCP + settings (+ CLAUDE.md).</li>
+      <li>Manifest <code>.claude-plugin/&lt;name&gt;/plugin.json</code>; hook commands use <code>${CLAUDE_PLUGIN_ROOT}</code>.</li>
+      <li><code>/plugins</code> → installed + marketplaces; add a marketplace by GitHub URL; enable via settings.</li>
+      <li>Community plugins are <strong>not reviewed</strong> — read before installing. Commit your plugin so the team gets it on pull.</li>
+    </ul></div>
+
+  <div class="card"><h3>12 · Scheduling <span class="tag">11:07</span></h3>
+    <table>
+      <tr><th>Option</th><th>Where</th><th>Laptop on?</th><th>Triggers</th></tr>
+      <tr><td><code>/loop</code></td><td>Your machine, current session</td><td>Yes (+ session open)</td><td>Interval / cron, min 1 min ⚠️</td></tr>
+      <tr><td>Desktop task</td><td>Your machine</td><td>Yes</td><td>Time</td></tr>
+      <tr><td><strong>Claude routine</strong></td><td>Anthropic cloud</td><td><strong>No</strong></td><td>Schedule / API / GitHub events</td></tr>
+      <tr><td><code>claude -p</code></td><td>Anywhere you run it</td><td>Host must run</td><td>Your cron / CI</td></tr>
+    </table>
+    <ul class="tight">
+      <li>Cron executes blindly; scheduled Claude <strong>reasons about failure</strong> — reads errors, retries, documents, notifies.</li>
+      <li>Headless still respects permissions; it just never blocks on a prompt — which is what makes schedules trustworthy.</li>
+      <li><strong>Safety:</strong> read-only first · non-destructive outputs · human gate for irreversible steps · log everything · test for days.</li>
+    </ul></div>
+
+  <div class="card"><h3>13 · Capstone: DailyPulse <span class="tag">11:56</span></h3>
+    <p>FastAPI backend + React/Vite frontend built from a written spec: morning briefing, smart tasks (AI subtasks), standup generator, daily insights, weather, live AI news via Tavily.</p>
+    <ul class="tight">
+      <li>Order: spec &amp; CLAUDE.md → hooks → backend → test endpoints → frontend → fix CORS → live data → cron → recap.</li>
+      <li>Prompts written in advance, one per phase; optionally a second AI drafts them as “CTO”.</li>
+      <li>Lessons: compact before big asks (a bloated message cost ~$0.10 ⚠️); compress screenshots; app AI needs its own API key; degrade gracefully when the provider fails; the last 20% is where quality lives.</li>
+    </ul></div>
+</section>
+
+<!-- ================= CHEAT SHEET ================= -->
+<section id="cheat">
+  <h2>Cheat sheet</h2>
+  <p class="lead">The tables you’ll actually come back for. Full version: <code>02-cheatsheet.md</code>.</p>
+
+  <h3>Commands</h3>
+  <table>
+    <tr><th>Command</th><th>Does</th><th>Tip</th></tr>
+    <tr><td><code>/init</code></td><td>Generate CLAUDE.md</td><td>Then edit ruthlessly</td></tr>
+    <tr><td><code>/model</code></td><td>Switch model</td><td>Re-reads history — don’t thrash</td></tr>
+    <tr><td><code>/effort</code></td><td>low/medium/high/max thinking</td><td>High for hard problems</td></tr>
+    <tr><td><code>/cost</code></td><td>Tokens, spend, plan usage</td><td>After long runs</td></tr>
+    <tr><td><code>/context</code></td><td>What fills the window</td><td>When quality drops</td></tr>
+    <tr><td><code>/compact [keep…]</code></td><td>Summarise &amp; continue</td><td>Always pass what to preserve</td></tr>
+    <tr><td><code>/clear</code></td><td>Fresh session</td><td>Between unrelated tasks</td></tr>
+    <tr><td><code>/branch</code></td><td>Fork to a new session</td><td>Safe experiments</td></tr>
+    <tr><td><code>/rewind</code> / <code>/resume</code></td><td>Go back / reopen</td><td>Undo a direction</td></tr>
+    <tr><td><code>/agents</code> · <code>/mcp</code> · <code>/plugins</code></td><td>Manage workers/tools/bundles</td><td>Check what’s live</td></tr>
+    <tr><td><code>/loop</code></td><td>Repeat task in session</td><td>Needs session open ⚠️</td></tr>
+    <tr><td><code>claude -p "…"</code></td><td>Headless run</td><td>Never blocks; for cron/CI</td></tr>
+  </table>
+
+  <h3>Permission modes</h3>
+  <table>
+    <tr><th>Mode</th><th>Behaviour</th><th>Use for</th></tr>
+    <tr><td>Default</td><td>Ask every time</td><td>Learning, sensitive repos</td></tr>
+    <tr><td>Accept edits</td><td>Auto-approve edits + FS basics</td><td>Iterating</td></tr>
+    <tr><td>Plan</td><td>Read-only, plan first</td><td>Unfamiliar codebases</td></tr>
+    <tr><td>Auto</td><td>Runs + background safety check</td><td>Long tasks (recommended)</td></tr>
+    <tr><td>Don’t ask</td><td>Pre-approved tools only</td><td>CI / locked-down scripts</td></tr>
+    <tr><td>Bypass ⚠️</td><td>Almost everything</td><td>Isolated containers only</td></tr>
+  </table>
+
+  <h3>Directory map</h3>
+  <pre><code>project/.claude/          # committed, shared
+├── CLAUDE.md             # project brain
+├── settings.json         # permissions · hooks · env · plugins · MCP
+├── settings.local.json   # private overrides
+├── rules/                # focused policy files
+├── commands/             # custom slash commands (*.md)
+├── skills/&lt;name&gt;/SKILL.md
+├── agents/*.md
+├── hooks/                # hook scripts
+└── .mcp.json             # MCP servers
+
+~/.claude/                # user scope (all projects)
+~/.claude/projects/…      # on-disk session history</code></pre>
+
+  <h3>Hooks</h3>
+  <pre><code>{
+  "hooks": {
+    "PreToolUse": [{ "matcher": "Bash",
+      "hooks": [{ "type": "command", "command": "python .claude/hooks/guard.py", "timeout": 10 }] }],
+    "PostToolUse": [{ "matcher": "Write|Edit",
+      "hooks": [{ "type": "command", "command": "python .claude/hooks/format.py", "timeout": 30 },
+                { "type": "command", "command": "python .claude/hooks/log.py", "async": true }] }]
+  }
+}</code></pre>
+  <ul class="tight">
+    <li><strong>exit 0</strong> allow · <strong>exit 2</strong> block (stderr → Claude) · other = non-blocking error</li>
+    <li>Or print <code>{"hookSpecificOutput":{"permissionDecision":"deny","permissionDecisionReason":"…"}}</code></li>
+  </ul>
+
+  <h3>MCP config</h3>
+  <pre><code>{ "mcpServers": {
+    "my-server": { "type": "http", "url": "https://…/mcp/",
+                   "headers": { "X-API-Key": "${MY_API_KEY}" } } } }</code></pre>
+  <p class="lead">Scopes: project (committed) → user → local (private). <code>/mcp</code> to inspect. Each server costs context every request.</p>
+
+  <h3>Subagent skeleton</h3>
+  <pre><code>---
+name: code-reviewer
+description: Reviews changes for bugs and style. Use after implementing a feature.
+tools: Read, Grep, Glob
+disallowedTools: Bash, Edit
+model: haiku
+effort: high
+---
+You are a senior reviewer. Report findings only; never modify files.</code></pre>
+
+  <h3>Scheduling safety, in one table</h3>
+  <table>
+    <tr><th>❌ Bad</th><th>✅ Good</th></tr>
+    <tr><td>“Deploy when tests pass”</td><td>“Write READY-TO-DEPLOY.md and ask a human in Slack to deploy”</td></tr>
+    <tr><td>“Fix all lint errors”</td><td>“List lint errors to reports/lint-issues.md; do not modify source”</td></tr>
+    <tr><td>“Clean up the repo”</td><td>“Report duplicates and stale files; take no action”</td></tr>
+  </table>
+  <div class="note">Plus: start read-only · write to non-destructive paths · human gate for irreversible steps · log everything · test for days.</div>
+
+  <h3>CLAUDE.md template</h3>
+  <pre><code># Project name
+What it is, for whom, and the goal.
+
+## Tech stack
+- Backend: framework, port, storage, env vars
+- Frontend: framework, port, data fetching, state rules
+
+## Essential commands
+- install / dev / test / lint / typecheck
+
+## Code standards
+- naming · typing · formatting · error handling
+
+## Project structure
+- path — responsibility (only what matters)
+
+## Hard rules
+- Never commit to main. Never hardcode credentials. No silent failures. Ask, don’t assume.
+
+## Verification (after changes)
+- code → typecheck + tests · UI → screenshot vs requirement · DB → test query</code></pre>
+</section>
+
+<!-- ================= FLASHCARDS ================= -->
+<section id="cards">
+  <h2>Flashcards</h2>
+  <p class="lead">Click the card to flip. Do 15–20 a day: day 1 → day 3 → day 7 → day 21.</p>
+  <div class="row">
+    <button class="btn ghost" id="prevCard">← Prev</button>
+    <button class="btn ghost" id="nextCard">Next →</button>
+    <button class="btn ghost" id="shuffle">Shuffle</button>
+    <span class="count" id="cardCount"></span>
+  </div>
+  <div class="fc" id="fc">
+    <div class="q" id="fcq"></div>
+    <div class="a" id="fca"></div>
+    <div class="hint">click to flip</div>
+  </div>
+</section>
+
+<!-- ================= QUIZ ================= -->
+<section id="quiz">
+  <h2>Quiz</h2>
+  <p class="lead">Pick an answer — it locks in and explains. Score appears at the end.</p>
+  <div id="quizWrap"></div>
+  <div class="row">
+    <span class="score" id="score">Score: 0 / 0</span>
+    <button class="btn ghost" id="resetQuiz">Reset</button>
+  </div>
+</section>
+
+<!-- ================= LABS ================= -->
+<section id="labs">
+  <h2>Lab tracker</h2>
+  <p class="lead">Twelve labs + the capstone. Ticks are saved in your browser (<code>localStorage</code>) — it’s a tracker, not the labs themselves; full instructions are in <code>06-labs.md</code>.</p>
+  <div class="row"><span class="count" id="labCount"></span><button class="btn ghost" id="resetLabs">Reset ticks</button></div>
+  <div id="labWrap"></div>
+</section>
+
+</main>
+
+<footer>
+  Study companion for “CLAUDE CODE FULL COURSE 12 HOURS” by Mayank Aggarwal — summaries and practice material, not a transcript.
+  ⚠️ = version-specific detail from the recording; verify against current official documentation.
+</footer>
+
+<script>
+/* ---------- tabs ---------- */
+const navBtns=[...document.querySelectorAll('nav button')];
+navBtns.forEach(b=>b.onclick=()=>{
+  navBtns.forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('main section').forEach(s=>s.classList.toggle('on',s.id===b.dataset.t));
+  window.scrollTo({top:0,behavior:'smooth'});
+});
+
+/* ---------- flashcards ---------- */
+const CARDS=[
+["Who builds Claude, and who builds ChatGPT?","Anthropic builds Claude; OpenAI builds ChatGPT."],
+["Name the three model tiers and their characters.","Haiku — fast and cheap. Sonnet — balanced. Opus — most capable. ⚠️ version numbers change."],
+["What is the course’s model-selection rule?","Plan with the strongest (Opus), build with the balanced one (Sonnet), maintain with the cheap fast one (Haiku)."],
+["What is “Claude Code” in the brain/hands model?","The same Claude brain, installed on your machine so it can act through the terminal: create/edit/delete files and run commands."],
+["What are “the hands”?","The terminal. Anything that can run commands there has access to your machine."],
+["What is the agentic loop?","Ask → plan → act → observe → check → retry or answer. Iteration at high speed, not magic."],
+["What can chat Claude NOT do that Claude Code can?","Touch your files — chat can only advise."],
+["What are you agreeing to at “trust this workspace”?","That Claude Code may read, write and execute files in that folder. It’s the real security boundary."],
+["Subscription vs API key?","Subscription draws from plan limits; an API key bills per token and is required for headless/programmatic use."],
+["What does /model warn about when switching?","The conversation is cached for the current model — switching re-reads the full history. Don’t switch constantly."],
+["Difference between /context, /compact and /clear?","/context inspects what fills the window; /compact summarises and continues; /clear starts a fresh session."],
+["Which permission mode is read-only?","Plan mode — explore and plan before anything is edited."],
+["How do you cycle permission modes?","Shift+Tab."],
+["Where do custom slash commands come from?","Markdown files in .claude/commands/ — the filename becomes the command."],
+["Order the CLAUDE.md hierarchy, weakest to strongest.","Enterprise → user (~/.claude/CLAUDE.md) → project (./CLAUDE.md or .claude/CLAUDE.md) → CLAUDE.local.md."],
+["How does Claude find instruction files?","It walks up the directory tree from the working directory, loading CLAUDE.md / CLAUDE.local.md along the way."],
+["Name three things that don’t belong in CLAUDE.md.","Full API docs, drift-prone code snippets, task-specific instructions (and never secrets)."],
+["What problem does CLAUDE.md solve?","It gives the project permanent memory — stack, commands, conventions, rules — so sessions don’t restart from zero."],
+["Why is every message expensive?","LLMs are stateless: each call re-sends the full history plus system prompt, tools, MCP, skills and CLAUDE.md."],
+["What is context rot?","Degradation in a long session — ignored instructions, repeated work, new mistakes — from context volume plus attention bias to the start/end."],
+["What’s the right way to use /compact?","Pass explicit instructions for what must survive: file structure, endpoints, patterns."],
+["Three context costs you control?","CLAUDE.md size, number of enabled MCP servers, session hygiene/length (also: prompt specificity, model/effort, pasted images)."],
+["Which context costs can’t you control?","The platform system prompt and core tool definitions."],
+["What is a skill?","A reusable playbook: SKILL.md with frontmatter plus instructions and optional scripts, references and assets."],
+["Why don’t many skills blow up your context?","Progressive disclosure — only name and description sit in context until the skill is invoked."],
+["Which skill field drives auto-invocation?","description — it tells the model when the skill applies."],
+["When should a skill bundle a script?","When the steps are deterministic: scripts run identically each time and cost no generation tokens."],
+["Where do skills live?","Project .claude/skills/<name>/SKILL.md, personal ~/.claude/skills/, or inside plugins."],
+["Why are hooks “zero token”?","They run outside the model on lifecycle events — no prompt, no context, no generation cost."],
+["What does hook exit code 2 do?","Blocks the action and returns stderr to Claude as the reason. Exit 0 allows; other codes are non-fatal errors."],
+["What is a hook matcher?","The pattern choosing which events/tools a hook fires for, e.g. \"Bash\" or \"Write|Edit\"."],
+["Where are hooks configured?","In settings.json under the hooks key; scripts usually live in .claude/hooks/."],
+["Give three classic hook uses.","Auto-format after writes, block dangerous bash commands, log/notify around sessions."],
+["Define MCP in one sentence.","An open standard for connecting AI agents to external tools and data — a toolbox you don’t maintain."],
+["Connectors vs MCP?","Connectors are ready-made vendor integrations inside Claude; MCP is the open protocol you configure (local or hosted servers)."],
+["How are MCP secrets handled?","Environment variables referenced in config (${MY_API_KEY}) — never committed literals."],
+["Name the three MCP config scopes.","Project (committed, team), user (all your projects), local (private, not committed)."],
+["Which command inspects MCP servers and tools?","/mcp."],
+["Why can too many MCP servers make Claude worse?","Every server’s tool descriptions consume context every request, and overlapping tools confuse selection."],
+["What defines a subagent?","An isolated worker with its own context, prompt, restricted tools and optionally a cheaper model — only a summary returns."],
+["Three reasons to use subagents?","Keep the main context clean, cut cost with cheaper models, parallelise/focus work with restricted tools."],
+["How are subagents invoked?","Natural language (auto by description), explicit @name mention, or the /agents manager."],
+["Rule of thumb for delegating?","If it reads a lot to produce a little, make it a subagent."],
+["Subagents vs agent teams?","Subagents report back to one parent; teammates coordinate as peers in separate sessions, isolated by git worktrees."],
+["What does a plugin bundle?","Agents, skills, commands, hooks, MCP servers, settings and CLAUDE.md — installable in one step, shareable via git."],
+["Why ${CLAUDE_PLUGIN_ROOT} in plugin hooks?","So hook paths resolve wherever the plugin is installed."],
+["Due diligence for community plugins?","They aren’t reviewed by Anthropic and run with your permissions — read the hooks/commands, check reputation."],
+["Three scheduling options and their laptop needs?","/loop (machine + session open), desktop task (machine on), Claude routine (cloud — laptop can be closed); claude -p is the scriptable form."],
+["Why is headless mode essential for schedules?","A run that stops to ask permission is a broken schedule; claude -p never blocks (it still enforces permissions)."],
+["Five safety rules for unattended work?","Read-only first · non-destructive outputs · human gate for irreversible actions · log everything · test for days."],
+["Rewrite: “when tests pass, deploy.”","“Write READY-TO-DEPLOY.md and ask a human in Slack to deploy.”"],
+["Why is scheduled Claude better than plain cron?","Reasoning, not just execution: it reads errors, tries alternatives, documents failures and notifies with a diagnosis."],
+["What is the capstone and its build order?","DailyPulse: spec + CLAUDE.md → hooks → FastAPI backend → test endpoints → React frontend → fix CORS → live data → cron."],
+["What’s the context-budget lesson from the capstone?","Compact with instructions before big asks — one bloated message cost ~$0.10 in the demo ⚠️."]
+];
+let ci=0, order=CARDS.map((_,i)=>i);
+const fcq=document.getElementById('fcq'), fca=document.getElementById('fca'), fc=document.getElementById('fc'), cardCount=document.getElementById('cardCount');
+function renderCard(){ const [q,a]=CARDS[order[ci]]; fcq.textContent=q; fca.textContent=a; fc.classList.remove('flip'); cardCount.textContent=`Card ${ci+1} / ${order.length}`; }
+fc.onclick=()=>fc.classList.toggle('flip');
+document.getElementById('nextCard').onclick=()=>{ci=(ci+1)%order.length;renderCard();};
+document.getElementById('prevCard').onclick=()=>{ci=(ci-1+order.length)%order.length;renderCard();};
+document.getElementById('shuffle').onclick=()=>{order=order.sort(()=>Math.random()-.5);ci=0;renderCard();};
+document.addEventListener('keydown',e=>{ if(!document.getElementById('cards').classList.contains('on'))return;
+  if(e.key==='ArrowRight'){ci=(ci+1)%order.length;renderCard();} if(e.key==='ArrowLeft'){ci=(ci-1+order.length)%order.length;renderCard();} if(e.key===' '){e.preventDefault();fc.classList.toggle('flip');}});
+renderCard();
+
+/* ---------- quiz ---------- */
+const QUIZ=[
+["In the course’s core analogy, what does the terminal represent for Claude Code?",
+ ["A cheaper interface","The “hands” that let the brain act on your machine","A backup for the web app","A permission-mode setting"],1,
+ "Claude Code is the brain with hands; the terminal is the mechanism of action."],
+["Which best fits the model-selection rule?",
+ ["Opus for renaming variables","Haiku for architecture planning","Opus to plan, Sonnet to build, Haiku to maintain","Always Opus — quality first"],2,
+ "Match the model to the job; always-Opus burns cost and limits."],
+["Claude on the web or desktop cannot…",
+ ["explain code you paste","read a screenshot","edit files in your project folder","answer follow-ups"],2,
+ "Chat can advise but can’t touch your files."],
+["The agentic loop is best described as…",
+ ["a prompt template","plan → act → observe → check → retry/answer","a model training process","a caching layer"],1,
+ "Fast iteration is the “magic”."],
+["Which is the strongest scope in the CLAUDE.md hierarchy?",
+ ["User ~/.claude/CLAUDE.md","Enterprise policy","CLAUDE.local.md","Project .claude/CLAUDE.md"],2,
+ "CLAUDE.local.md sits closest to the project and outranks the rest."],
+["Which does NOT belong in a CLAUDE.md?",
+ ["Essential build/test commands","Naming conventions","The entire third-party API reference","A verification checklist"],2,
+ "Full API docs bloat every request and go stale."],
+["Why is history billed again on every message?",
+ ["Caching is disabled","LLMs are stateless, so history is re-sent each call","It’s a bug","Only if you use /compact"],1,
+ "Stateless models → full re-send each turn."],
+["Which command starts a new session with empty context, leaving the old one on disk?",
+ ["/compact","/rewind","/clear","/branch"],2,
+ "/clear. /compact summarises in place; /branch forks a copy."],
+["Which mode is read-only and presents a plan first?",
+ ["Auto","Plan","Accept edits","Bypass"],1,
+ "Plan mode = explore and plan before editing."],
+["Which statement about skills is TRUE?",
+ ["All installed skills load fully at session start","Only name and description sit in context until used","Skills can’t contain scripts","Skills exist only in Claude Code"],1,
+ "Progressive disclosure keeps skills cheap at rest."],
+["A skill should bundle a script when…",
+ ["the instructions are vague","the steps are deterministic and repeatable","you want auto-invocation","you need arguments"],1,
+ "Scripts are identical every run and cost no generation tokens."],
+["Hook exit code 2 does what?",
+ ["Retries the tool","Blocks the action and returns stderr to Claude as the reason","Logs a warning only","Disables the hook"],1,
+ "Exit 2 is the emergency brake; exit 0 allows."],
+["Why are hooks “zero token”?",
+ ["They use a smaller model","They run outside the model on lifecycle events","They cache responses","They only run at session end"],1,
+ "No prompt, no context, no generation cost."],
+["The most reliable hook-configuration practice is…",
+ ["hand-edit settings while Claude runs","let Claude add the first hook, then inspect","only use bash hooks","never use timeouts"],1,
+ "Hand-editing during init can get overwritten."],
+["MCP is best summarised as…",
+ ["a model tier","an open standard for connecting AI agents to external tools and data","Anthropic’s plugin marketplace","a prompt technique"],1,
+ "The toolbox you don’t have to maintain."],
+["Biggest hidden cost of many MCP servers?",
+ ["Disk space","Their tool descriptions consume context every request","Slower installs","More permission prompts"],1,
+ "Also overlapping tools confuse tool choice."],
+["What distinguishes agent teams from subagents?",
+ ["Teams use cheaper models","Teammates coordinate as peers in separate sessions, often via git worktrees","Subagents can’t run in parallel","Teams don’t use tools"],1,
+ "Hierarchy and report-back vs peer coordination."],
+["A plugin can bundle all EXCEPT…",
+ ["agents and skills","hooks and MCP servers","settings and CLAUDE.md","your personal credentials, safely shared"],3,
+ "Never bundle or share credentials."],
+["Which keeps working when your laptop is closed?",
+ ["/loop","Desktop scheduled task","Claude routine","Foreground session"],2,
+ "Routines run on Anthropic’s cloud infrastructure."],
+["Which is a safe automation?",
+ ["“Every night fix failing tests and push to main”","“On PR open, post a review comment and flag auth/payment changes”","“Deploy when tests pass”","“Delete what the repo doesn’t need”"],1,
+ "Read-and-report with human review; the rest are unsupervised or irreversible."],
+["Your session is slow, expensive and forgetful after hours, but you must continue the same task. Recovery?",
+ ["Restart the machine","/context then /compact with explicit preservation instructions","Switch to Opus","Paste CLAUDE.md again"],1,
+ "Inspect, then compress with intent; /clear + a status file if quality is still poor."],
+["Three context costs you control + one you don’t?",
+ ["Tools, model, MCP / system prompt of the platform","Nothing is controllable","Only CLAUDE.md","Only MCP"],0,
+ "CLAUDE.md size, MCP count, session hygiene and more are yours; the platform system prompt isn’t."],
+["Why do app AI features need an API key rather than your subscription?",
+ ["Subscriptions are slower","A subscription authenticates you to Claude Code; apps need their own programmatic credential, billed separately","API keys are free","Apps can’t call AI"],1,
+ "This is why apps must degrade gracefully when the provider fails."],
+["Which mechanism guarantees formatting, logging and blocking dangerous commands?",
+ ["Prompts","Hooks","Skills","CLAUDE.md notes"],1,
+ "Hooks are deterministic and cost zero tokens; prompts can be forgotten or argued with."],
+["What does /context tell you that /cost doesn’t?",
+ ["Currency spent","The composition of the window (system, tools, MCP, skills, messages, free space)","Lines changed","Model version"],1,
+ "/context = composition for quality; /cost = consumption for spend."]
+];
+let answered=new Set(), correct=0;
+const qw=document.getElementById('quizWrap');
+QUIZ.forEach((q,i)=>{
+  const box=document.createElement('div'); box.className='qbox';
+  const t=document.createElement('div'); t.className='qtext'; t.textContent=`${i+1}. ${q[0]}`; box.appendChild(t);
+  q[1].forEach((opt,j)=>{
+    const b=document.createElement('button'); b.className='opt'; b.textContent=String.fromCharCode(65+j)+'. '+opt;
+    b.onclick=()=>{
+      if(answered.has(i))return; answered.add(i);
+      if(j===q[2]){b.classList.add('right');correct++;}
+      else{b.classList.add('wrong'); box.querySelectorAll('.opt')[q[2]].classList.add('right');}
+      box.classList.add('done'); updateScore();
+    };
+    box.appendChild(b);
+  });
+  const ex=document.createElement('div'); ex.className='expl'; ex.textContent='Why: '+q[3]; box.appendChild(ex);
+  qw.appendChild(box);
+});
+function updateScore(){document.getElementById('score').textContent=`Score: ${correct} / ${answered.size} answered (of ${QUIZ.length})`;}
+document.getElementById('resetQuiz').onclick=()=>{answered.clear();correct=0;
+  qw.querySelectorAll('.qbox').forEach(b=>{b.classList.remove('done');b.querySelectorAll('.opt').forEach(o=>o.classList.remove('right','wrong'));});updateScore();};
+updateScore();
+
+/* ---------- labs ---------- */
+const LABS=[
+["Lab 1 — Prove chat vs Code",["Ask chat Claude for bubble sort and save it manually","Ask Claude Code the same and watch it create the file","Explain in 3 sentences what made the difference"]],
+["Lab 2 — Install, authenticate, survive an error",["Install natively for your OS","Authenticate and run /status","Break something recoverable and fix it with the triage list","Locate session history under ~/.claude/"]],
+["Lab 3 — Command and permission tour",["/help /status /model /effort tour","/cost and /context read carefully","Branch, resume, compact with instructions","Test plan vs accept-edits with Shift+Tab"]],
+["Lab 4 — CLAUDE.md that pays for itself",["Draft overview, stack, commands, standards, rules, verification","Add an import and one HTML comment","Test user vs project priority conflict","Make Claude run your documented test command"]],
+["Lab 5 — Break and fix context",["Blow up the context deliberately","Watch an early instruction get ignored","Recover with /context → /compact → /clear","Compare per-message cost before/after"]],
+["Lab 6 — Build a skill you’ll reuse",["Write SKILL.md with frontmatter","Move deterministic steps into a script","Trigger it explicitly, then let it auto-invoke","Add an argument and run twice"]],
+["Lab 7 — Hooks: guard, format, log",["PostToolUse formatter that fires","PreToolUse guard that exits 2 and blocks","SessionStart/Stop logger","Test each hook by hand with sample JSON"]],
+["Lab 8 — Connect and build MCP",["Configure a hosted server with ${ENV_VAR}","Inspect with /mcp and use one tool","Build a tiny server with 3–4 tools","Compare auto vs explicit tool selection"]],
+["Lab 9 — Two restricted subagents",["Create explorer (read-only tools)","Create reviewer (haiku, no Edit/Bash)","Verify auto-delegation and a small main context","Run two in parallel"]],
+["Lab 10 — Agent teams on a toy feature",["Enable the experimental flag in a scratch repo","Write a 3-workstream spec with an API-contract rule","Watch the lead spawn teammates","Review branches and merge yourself"]],
+["Lab 11 — Package your config as a plugin",["Create .claude-plugin/<name>/plugin.json","Verify paths and ${CLAUDE_PLUGIN_ROOT}","Enable, restart, confirm capabilities","Clone fresh and confirm it travels"]],
+["Lab 12 — Schedule something harmless",["Run claude -p once by hand","Use /loop with a stop condition","Set one read-only recurring task with a report path","Verify three successful logged runs"]],
+["Lab 13 — Capstone: DailyPulse",["Phase 0: CLAUDE.md, hooks, prompts file","Phase 1: backend + endpoint tests","Phase 2: frontend + one skill","Phase 3: AI feature with graceful fallback","Phase 4: schedule it read-only and log","Write RETRO.md"]]
+];
+const lw=document.getElementById('labWrap');
+LABS.forEach((lab,li)=>{
+  const d=document.createElement('div'); d.className='lab';
+  const h=document.createElement('h4'); h.textContent=lab[0]; d.appendChild(h);
+  lab[1].forEach((step,si)=>{
+    const id=`lab-${li}-${si}`;
+    const l=document.createElement('label');
+    const cb=document.createElement('input'); cb.type='checkbox'; cb.id=id;
+    cb.checked=localStorage.getItem(id)==='1';
+    cb.onchange=()=>{localStorage.setItem(id,cb.checked?'1':'0');updateLabCount();};
+    const s=document.createElement('span'); s.textContent=step;
+    l.appendChild(cb); l.appendChild(s); d.appendChild(l);
+  });
+  lw.appendChild(d);
+});
+function updateLabCount(){
+  const boxes=lw.querySelectorAll('input[type=checkbox]');
+  const done=[...boxes].filter(b=>b.checked).length;
+  document.getElementById('labCount').textContent=`${done} / ${boxes.length} steps complete`;
+}
+document.getElementById('resetLabs').onclick=()=>{
+  lw.querySelectorAll('input[type=checkbox]').forEach(b=>{b.checked=false;localStorage.setItem(b.id,'0');});updateLabCount();};
+updateLabCount();
+</script>
+</body>
+</html>
