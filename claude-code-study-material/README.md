@@ -20,6 +20,7 @@ Study material for the YouTube course **"CLAUDE CODE FULL COURSE 12 HOURS: Build
 | File | What it is | Best used for |
 |---|---|---|
 | `README.md` | This file: video map, study plans, how the pieces fit | Orientation |
+| `step-by-step/` | **Procedural guide: every topic in What / Why / How → Lab → Quiz** (13 parts, 42 topics, 42 labs, 126 questions, answers included) | Doing it, hands on the keyboard |
 | `01-study-guide.md` | **Core document.** Module-by-module guide (13 modules) with concepts, demos, configs, gotchas, and self-check questions | First read-through + revision |
 | `02-cheatsheet.md` | One-page-per-topic quick reference: commands, modes, files, hooks, scheduling, templates | Daily use, during practice |
 | `03-glossary.md` | Plain-English definitions of every term the course uses | When a word blocks you |
@@ -29,6 +30,8 @@ Study material for the YouTube course **"CLAUDE CODE FULL COURSE 12 HOURS: Build
 | `study-hub.html` | Interactive single-file study hub (tabs, flip cards, quiz reveal) | Browser-based revision |
 
 **How to use it with the video:** skim the relevant module in `01-study-guide.md` *before* watching that chapter (so you know what to look for), watch at 1.25–1.5×, then do the matching lab in `06-labs.md` on your own machine, then self-test with the flashcards/quiz a day later.
+
+**Two ways to learn:** the `step-by-step/` guide is the *doing* track — one topic at a time in What/Why/How, each ending with a lab and a quiz (answers in `step-by-step/13-answer-key.md`). The study guide is the *reading* track. If you want a single path: `step-by-step/README.md` → work through Parts 1–13 → use the study guide, cheat sheet and flashcards for revision.
 
 ---
 
