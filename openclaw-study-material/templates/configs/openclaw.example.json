@@ -1,0 +1,28 @@
+{
+  "_comment": "EXAMPLE ONLY — adapt via `openclaw configure` or dashboard where possible. Never commit real tokens. Keys shown are placeholders. After edits: openclaw gateway restart",
+  "env": { "ANTHROPIC_API_KEY": "sk-ant-REPLACE_ME_or_use_openai_openrouter_ollama" },
+  "agents": {
+    "defaults": {
+      "model": { "primary": "anthropic/claude-sonnet-4-6" },
+      "workspace": "~/.openclaw/workspace",
+      "compaction": { "mode": "safeguard" },
+      "heartbeat": { "every": "30m" },
+      "timeoutSeconds": 1800,
+      "maxConcurrent": 4,
+      "subagents": { "maxConcurrent": 8 }
+    },
+    "entries": {
+      "main": { "groupChat": { "mentionPatterns": ["@openclaw", "openclaw"] } }
+    }
+  },
+  "channels": {
+    "telegram": { "enabled": true, "botToken": "123456:REPLACE_ME", "dmPolicy": "pairing" },
+    "whatsapp": { "enabled": false, "dmPolicy": "pairing", "allowFrom": ["+910000000000"], "groups": { "*": { "requireMention": true } } }
+  },
+  "gateway": { "mode": "local", "bind": "loopback", "auth": { "mode": "token" } },
+  "session": { "scope": "per-sender", "resetTriggers": ["/new", "/reset"], "reset": { "mode": "daily", "atHour": 4, "idleMinutes": 10080 } },
+  "messages": { "ackReactionScope": "group-mentions" },
+  "commands": { "native": "auto", "nativeSkills": "auto" },
+  "skills": { "install": { "nodeManager": "npm" } },
+  "logging": { "level": "info" }
+}
